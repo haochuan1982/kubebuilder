@@ -20,6 +20,9 @@ api/v1/cronjob_types.go
 api/v1/cronjob_webhook.go
 controllers/cronjob_controller.go
 
+in controllers/cronjob_controller.go, this line will generate admission in role.yaml
+//+kubebuilder:rbac:groups=batch,resources=jobs,verbs=update;list;watch;create;update;delete
+
 $ go get github.com/robfig/cron
 $ make manifests
 
