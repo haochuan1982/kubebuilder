@@ -1,0 +1,40 @@
+
+$ kind create cluster
+$ docker exec -it 9b3645be73eb bash
+root@kind-control-plane:/# mkdir -p  /etc/systemd/system/containerd.service.d
+root@kind-control-plane:/# touch /etc/systemd/system/containerd.service.d/http-proxy.conf
+root@kind-control-plane:/# echo "[Service]" >> /etc/systemd/system/containerd.service.d/http-proxy.conf
+root@kind-control-plane:/# echo "Environment=\"HTTPS_PROXY=http://10.239.120.56:913\"" >> /etc/systemd/system/containerd.service.d/http-proxy.conf
+root@kind-control-plane:/# echo "Environment=\"HTTP_PROXY=http://10.239.120.56:913\"" >> /etc/systemd/system/containerd.service.d/http-proxy.conf
+root@kind-control-plane:/# echo "Environment=\"NO_PROXY=localhost,127.0.0.1,.intel.com\"" >> /etc/systemd/system/containerd.service.d/http-proxy.conf
+root@kind-control-plane:/# systemctl daemon-reload
+root@kind-control-plane:/# systemctl restart containerd
+root@kind-control-plane:/# exit
+
+$ kubebuilder init --domain my.domain --repo my.domain/CronJob
+$ kubebuilder create api --group batch --version v1 --kind CronJob
+$ kubebuilder create webhook --group batch --version v1 --kind CronJob --defaulting --programmatic-validation
+
+edit
+api/v1/cronjob_types.go
+api/v1/cronjob_webhook.go
+controllers/cronjob_controller.go
+
+$ go get github.com/robfig/cron
+$ make manifests
+
+$ make 
+will update api/v1/zz_generated.deepcopy.go
+
+edit 
+config/crd/kustomization.yaml
+config/default/kustomization.yaml
+config/manager/kustomization.yaml
+
+make docker-build docker-push IMG=chenhaochuan82/cronjob:v0.1
+make deploy IMG=chenhaochuan82/cronjob:v0.2
+
+edit
+config/samples/batch_v1_cronjob.yaml
+$ kubectl apply -f config/samples/batch_v1_cronjob.yaml
+
