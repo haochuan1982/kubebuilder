@@ -1,0 +1,6 @@
+domain: my.domain
+layout:
+- go.kubebuilder.io/v3
+projectName: project
+repo: my.domain/CronJob
+version: "3"
